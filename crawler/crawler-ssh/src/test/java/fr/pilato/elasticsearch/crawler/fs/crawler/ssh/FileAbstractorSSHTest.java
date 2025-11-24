@@ -255,9 +255,10 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                         FileAbstractModel::getPath,
                         FileAbstractModel::getFullpath,
                         FileAbstractModel::getSize,
-                        FileAbstractModel::getGroup,
-                        FileAbstractModel::getOwner)
-                .containsExactlyInAnyOrder(values);
+                        FileAbstractModel::getPermissions,
+                        FileAbstractModel::getOwner,
+                        FileAbstractModel::getGroup
+                ).containsExactlyInAnyOrder(values);
     }
 
     private void addFakeFile(Path dir, String filename, String content) throws IOException {
