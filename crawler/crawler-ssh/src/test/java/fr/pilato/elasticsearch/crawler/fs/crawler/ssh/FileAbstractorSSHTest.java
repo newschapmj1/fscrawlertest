@@ -275,7 +275,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
 
         // We can't assert on the size of a directory as it depends on the OS.
         // So we are splitting our assertions
-        assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(Collectors.toList())).extracting(
+        assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(java.util.stream.Collectors.toList())).extracting(
                         FileAbstractModel::isFile,
                         FileAbstractModel::isDirectory,
                         FileAbstractModel::getName,
@@ -290,7 +290,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                                 tuple -> {
                                     // We are creating a new tuple here for directories, which does not include size.
                                     // The original tuple has 10 elements. The new one will have 9.
-                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7), tuple.toList().get(8));
+                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
+                                            tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get());
                                 })
                                 .toArray(Tuple[]::new)
         );
