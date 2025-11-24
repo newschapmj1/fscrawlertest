@@ -137,7 +137,6 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
 
         SftpSubsystemFactory factory = new SftpSubsystemFactory.Builder()
                 .withFileSystemAccessor(new SftpFileSystemAccessor() {
-                    @Override
                     public Path resolveLocalFilePath(org.apache.sshd.common.session.Session session, SftpSubsystemProxy subsystem, Path rootDir, String remotePath) throws InvalidPathException {
                         String path = remotePath;
                         if (remotePath.startsWith("/")) {
