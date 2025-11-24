@@ -286,10 +286,10 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                         FileAbstractModel::getOwner,
                         FileAbstractModel::getGroup
                 ).containsExactlyInAnyOrder(
-                        java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).map(
+                        java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).<Tuple>map(
                                 tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
                                         tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(7), tuple.toList().get(8),
-                                        tuple.toList().get(9))).collect(java.util.stream.Collectors.toList()).toArray(new Tuple[]{})
+                                        tuple.toList().get(9))).toArray(Tuple[]::new)
         );
 
         assertThat(models.stream().filter(FileAbstractModel::isFile).collect(java.util.stream.Collectors.toList())).extracting(
