@@ -288,9 +288,9 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 ).containsExactlyInAnyOrder(
                         java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).<Tuple>map(
                                 tuple -> {
-                                    var list = tuple.toList();
-                                    // We are creating a new tuple here but without the size attribute (which is at index 6)
-                                    return tuple(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5), list.get(7), list.get(8), list.get(9));
+                                    // We are creating a new tuple here for directories, which does not include size.
+                                    // The original tuple has 10 elements. The new one will have 9.
+                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7), tuple.toList().get(8));
                                 })
                                 .toArray(Tuple[]::new)
         );
