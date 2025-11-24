@@ -302,10 +302,10 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 FileAbstractModel::getExtension,
                 FileAbstractModel::getPath,
                 FileAbstractModel::getFullpath,
+                FileAbstractModel::getSize,
                 FileAbstractModel::getPermissions,
                 FileAbstractModel::getOwner,
-                FileAbstractModel::getGroup,
-                FileAbstractModel::getSize
+                FileAbstractModel::getGroup
         ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(0)).toArray(Tuple[]::new)
         );
