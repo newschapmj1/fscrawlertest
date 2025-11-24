@@ -226,12 +226,12 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
 
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
             testFilesInDir(fileAbstractor, "/",
-                    tuple(false, true, "nested", "", "/", "/nested", 0L, 16877, "0", "0"),
-                    tuple(false, true,"permission", "", "/", "/permission", 0L, 16877, "0", "0"),
-                    tuple(false, true,"subdir_with_space ", "", "/", "/subdir_with_space ", 0L, 16877, "0", "0"),
+                    tuple(false, true, "nested", null, "/", "/nested", 0L, 16877, "0", "0"),
+                    tuple(false, true,"permission", null, "/", "/permission", 0L, 16877, "0", "0"),
+                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 0L, 16877, "0", "0"),
                     tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 15L, 33188, "0", "0"));
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple(false, true,"buzz", "", "/nested", "/nested/buzz", 0L, 16877, "0", "0"),
+                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 0L, 16877, "0", "0"),
                     tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 24L, 33188, "0", "0"),
                     tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 8L, 33188, "0", "0"));
             testFilesInDir(fileAbstractor, "/permission",
