@@ -153,7 +153,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         sshd.setPublickeyAuthenticator(new AuthorizedKeysAuthenticator(rootTmpDir.resolve("public.key")));
 
         sshd.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
-        sshd.setFileSystemFactory(session -> new VfsFileSystemFactory(testDir));
+        sshd.setFileSystemFactory(new VfsFileSystemFactory(testDir));
         sshd.start();
 
         logger.info(" -> Started fake SSHD service on {}:{}", sshd.getHost(), sshd.getPort());
