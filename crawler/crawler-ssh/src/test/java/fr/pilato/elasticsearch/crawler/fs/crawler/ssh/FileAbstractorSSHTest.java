@@ -264,7 +264,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         fsSettings.getServer().setPassword(SSH_PASSWORD);
 
         // The test data is defined using AssertJ's `tuple`. The structure for these tuples is:
-        // tuple(name, isDirectory, path, fullpath, permissions, size)
+        // tuple(name, isDirectory, extension, path, fullpath, permissions, owner, group, size)
         // This structure must match the properties extracted in the testFilesInDir() helper method.
 
         // --- First run: Test with login/password ---
@@ -275,29 +275,29 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple("nested", true, "/", "/nested", dirPerms, 0L));
-            rootDirTuples.add(tuple("permission", true, "/", "/permission", dirPerms, 0L));
+            rootDirTuples.add(tuple("nested", true, null, "/", "/nested", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("permission", true, null, "/", "/permission", dirPerms, "0", "0", 0L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", dirPerms, 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, null, "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
             }
-            rootDirTuples.add(tuple("testfile.txt", false, "/", "/testfile.txt", filePerms, 15L));
+            rootDirTuples.add(tuple("testfile.txt", false, "txt", "/", "/testfile.txt", filePerms, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple("buzz", true, "/nested", "/nested/buzz", dirPerms, 0L),
-                    tuple("foo.txt", false, "/nested", "/nested/foo.txt", filePerms, 24L),
-                    tuple("bar.txt", false, "/nested", "/nested/bar.txt", filePerms, 8L));
+                    tuple("buzz", true, null, "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
+                    tuple("foo.txt", false, "txt", "/nested", "/nested/foo.txt", filePerms, "0", "0", 24L),
+                    tuple("bar.txt", false, "txt", "/nested", "/nested/bar.txt", filePerms, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple("all.txt", false, "/permission", "/permission/all.txt", allPerms, 3L),
-                    tuple("none.txt", false, "/permission", "/permission/none.txt", nonePerms, 3L));
+                    tuple("all.txt", false, "txt", "/permission", "/permission/all.txt", allPerms, "0", "0", 3L),
+                    tuple("none.txt", false, "txt", "/permission", "/permission/none.txt", nonePerms, "0", "0", 3L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                        tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, 33L),
-                        tuple("world.txt", false, "/subdir_with_space ", "/subdir_with_space /world.txt", filePerms, 33L));
+                        tuple("hello.txt", false, "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, "0", "0", 33L),
+                        tuple("world.txt", false, "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", filePerms, "0", "0", 33L));
             }
         }
 
@@ -310,29 +310,29 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple("nested", true, "/", "/nested", dirPerms, 0L));
-            rootDirTuples.add(tuple("permission", true, "/", "/permission", dirPerms, 0L));
+            rootDirTuples.add(tuple("nested", true, null, "/", "/nested", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("permission", true, null, "/", "/permission", dirPerms, "0", "0", 0L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", dirPerms, 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, null, "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
             }
-            rootDirTuples.add(tuple("testfile.txt", false, "/", "/testfile.txt", filePerms, 15L));
+            rootDirTuples.add(tuple("testfile.txt", false, "txt", "/", "/testfile.txt", filePerms, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple("buzz", true, "/nested", "/nested/buzz", dirPerms, 0L),
-                    tuple("foo.txt", false, "/nested", "/nested/foo.txt", filePerms, 24L),
-                    tuple("bar.txt", false, "/nested", "/nested/bar.txt", filePerms, 8L));
+                    tuple("buzz", true, null, "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
+                    tuple("foo.txt", false, "txt", "/nested", "/nested/foo.txt", filePerms, "0", "0", 24L),
+                    tuple("bar.txt", false, "txt", "/nested", "/nested/bar.txt", filePerms, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple("all.txt", false, "/permission", "/permission/all.txt", allPerms, 3L),
-                    tuple("none.txt", false, "/permission", "/permission/none.txt", nonePerms, 3L));
+                    tuple("all.txt", false, "txt", "/permission", "/permission/all.txt", allPerms, "0", "0", 3L),
+                    tuple("none.txt", false, "txt", "/permission", "/permission/none.txt", nonePerms, "0", "0", 3L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                        tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, 33L),
-                        tuple("world.txt", false, "/subdir_with_space ", "/subdir_with_space /world.txt", filePerms, 33L));
+                        tuple("hello.txt", false, "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, "0", "0", 33L),
+                        tuple("world.txt", false, "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", filePerms, "0", "0", 33L));
             }
         }
     }
@@ -356,9 +356,12 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         assertThat(models.stream().filter(FileAbstractModel::isFile).collect(Collectors.toList())).extracting(
                 FileAbstractModel::getName,
                 FileAbstractModel::isDirectory,
+                FileAbstractModel::getExtension,
                 FileAbstractModel::getPath,
                 FileAbstractModel::getFullpath,
                 FileAbstractModel::getPermissions,
+                FileAbstractModel::getOwner,
+                FileAbstractModel::getGroup,
                 FileAbstractModel::getSize
         ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values).filter(tuple -> !(boolean) tuple.toList().get(1)).toArray(Tuple[]::new)
@@ -368,15 +371,19 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(Collectors.toList())).extracting(
                 FileAbstractModel::getName,
                 FileAbstractModel::isDirectory,
+                FileAbstractModel::getExtension,
                 FileAbstractModel::getPath,
                 FileAbstractModel::getFullpath,
-                FileAbstractModel::getPermissions
+                FileAbstractModel::getPermissions,
+                FileAbstractModel::getOwner,
+                FileAbstractModel::getGroup
                 ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
                         .filter(tuple -> (boolean) tuple.toList().get(1))
-                        // From the original 6-element test tuples, create new 5-element tuples that match the properties
-                        // being extracted for directories (name, isDirectory, path, fullpath, permissions).
-                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4)))
+                        // From the original 9-element test tuples, create new 8-element tuples that match the properties
+                        // being extracted for directories (omitting size).
+                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
+                                tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7)))
                         .toArray(Tuple[]::new)
         );
     }
