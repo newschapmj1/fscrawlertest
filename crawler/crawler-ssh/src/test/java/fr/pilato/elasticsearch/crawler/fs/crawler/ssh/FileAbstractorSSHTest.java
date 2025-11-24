@@ -275,18 +275,18 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple("nested", true, null, "/", "/nested", dirPerms, "0", "0", 0L));
-            rootDirTuples.add(tuple("permission", true, null, "/", "/permission", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("nested", true, "", "/", "/nested", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("permission", true, "", "/", "/permission", dirPerms, "0", "0", 0L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple("subdir_with_space ", true, null, "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, "", "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
             }
             rootDirTuples.add(tuple("testfile.txt", false, "txt", "/", "/testfile.txt", filePerms, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple("buzz", true, null, "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
+                    tuple("buzz", true, "", "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
                     tuple("foo.txt", false, "txt", "/nested", "/nested/foo.txt", filePerms, "0", "0", 24L),
                     tuple("bar.txt", false, "txt", "/nested", "/nested/bar.txt", filePerms, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
@@ -310,18 +310,18 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple("nested", true, null, "/", "/nested", dirPerms, "0", "0", 0L));
-            rootDirTuples.add(tuple("permission", true, null, "/", "/permission", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("nested", true, "", "/", "/nested", dirPerms, "0", "0", 0L));
+            rootDirTuples.add(tuple("permission", true, "", "/", "/permission", dirPerms, "0", "0", 0L));
             // This test case is skipped on Windows because its filesystem does not support
             // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple("subdir_with_space ", true, null, "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, "", "/", "/subdir_with_space ", dirPerms, "0", "0", 0L));
             }
             rootDirTuples.add(tuple("testfile.txt", false, "txt", "/", "/testfile.txt", filePerms, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple("buzz", true, null, "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
+                    tuple("buzz", true, "", "/nested", "/nested/buzz", dirPerms, "0", "0", 0L),
                     tuple("foo.txt", false, "txt", "/nested", "/nested/foo.txt", filePerms, "0", "0", 24L),
                     tuple("bar.txt", false, "txt", "/nested", "/nested/bar.txt", filePerms, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
