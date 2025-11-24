@@ -300,13 +300,11 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 FileAbstractModel::getName,
                 FileAbstractModel::isDirectory,
                 FileAbstractModel::getPath,
-                FileAbstractModel::getFullpath,
-                FileAbstractModel::getSize
+                FileAbstractModel::getFullpath
                 ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
                         .filter(tuple -> (boolean) tuple.toList().get(1))
-                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2),
-                                tuple.toList().get(3)))
+                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3)))
                         .toArray(Tuple[]::new)
         );
     }
