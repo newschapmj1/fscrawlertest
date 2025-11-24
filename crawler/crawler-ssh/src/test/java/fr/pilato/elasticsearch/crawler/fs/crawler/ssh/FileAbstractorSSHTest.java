@@ -141,18 +141,6 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         addFakeFile(dirWithUtf8InName, "world.txt", "world");
          */
 
-        SftpSubsystemFactory factory = new SftpSubsystemFactory.Builder()
-                .withFileSystemAccessor(new SftpFileSystemAccessor() {
-                    public Path resolveLocalFilePath(org.apache.sshd.common.session.Session session, SftpSubsystemProxy subsystem, Path rootDir, String remotePath) throws InvalidPathException {
-                        String path = remotePath;
-                        if (remotePath.startsWith("/")) {
-                            path = remotePath.substring(1);
-                        }
-                        return testDir.resolve(path);
-                    }
-                })
-                .build();
-
         // Generate the key files for our SSH tests
         KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         saveKeyPair(rootTmpDir, keyPair);
@@ -164,7 +152,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 SSH_USERNAME.equals(username) && SSH_PASSWORD.equals(password));
         sshd.setPublickeyAuthenticator(new AuthorizedKeysAuthenticator(rootTmpDir.resolve("public.key")));
 
-        sshd.setSubsystemFactories(Collections.singletonList(factory));
+        sshd.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
+        sshd.setFileSystemFactory(session -> new VfsFileSystemFactory(testDir));
         sshd.start();
 
         logger.info(" -> Started fake SSHD service on {}:{}", sshd.getHost(), sshd.getPort());
@@ -312,7 +301,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 FileAbstractModel::isDirectory,
                 FileAbstractModel::getPath,
                 FileAbstractModel::getFullpath,
-        ).containsExactlyInAnyOrder(
+                FileAbstractModel::getSize
+                ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
                         .filter(tuple -> (boolean) tuple.toList().get(1))
                         .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2),
