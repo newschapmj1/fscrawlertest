@@ -289,8 +289,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                                 tuple -> {
                                     // We are creating a new tuple here for directories, which does not include size.
                                     // The original tuple has 10 elements. The new one will have 9.
-                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
-                                            tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get());
+                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4),
+                                            tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7), tuple.toList().get(8));
                                 })
                                 .toArray(Tuple[]::new)
         );
