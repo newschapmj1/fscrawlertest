@@ -52,6 +52,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -291,8 +292,11 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         Collection<FileAbstractModel> models = fileAbstractor.getFiles(path);
         assertThat(models).hasSize(values.length);
 
-        // We don't assert on isFile, extension and dates as they are either redundant or not fully predictable
-        assertThat(models).extracting(
+        // We can't assert on the size of a directory as it depends on the OS.
+        // So we are splitting our assertions for files and directories.
+
+        // 1. Assertions for files
+        assertThat(models.stream().filter(FileAbstractModel::isFile).collect(Collectors.toList())).extracting(
                 FileAbstractModel::getName,
                 FileAbstractModel::isDirectory,
                 FileAbstractModel::getPath,
@@ -302,15 +306,24 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 FileAbstractModel::getPermissions,
                 FileAbstractModel::getSize
         ).containsExactlyInAnyOrder(
+                java.util.stream.Stream.of(values).filter(tuple -> !(boolean) tuple.toList().get(1)).toArray(Tuple[]::new)
+        );
+
+        // 2. Assertions for directories (we don't extract the size)
+        assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(Collectors.toList())).extracting(
+                FileAbstractModel::getName,
+                FileAbstractModel::isDirectory,
+                FileAbstractModel::getPath,
+                FileAbstractModel::getFullpath,
+                FileAbstractModel::getOwner,
+                FileAbstractModel::getGroup,
+                FileAbstractModel::getPermissions
+        ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
-                        .map(tuple -> {
-                            // For directories, we can't rely on the size reported by the OS.
-                            // So if it's a directory, we just ignore the size for the assertion.
-                            if ((boolean) tuple.toList().get(1)) {
-                                return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), null);
-                            }
-                            return tuple;
-                        }).toArray(Tuple[]::new)
+                        .filter(tuple -> (boolean) tuple.toList().get(1))
+                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
+                                tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6)))
+                        .toArray(Tuple[]::new)
         );
     }
 
