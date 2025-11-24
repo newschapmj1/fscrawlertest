@@ -245,7 +245,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                     !OsValidator.WINDOWS ? tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33188, 8L) : tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33206, 8L));
             testFilesInDir(fileAbstractor, "/permission",
                     !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L), // This one is explicitly set, so it should be correct
-                    !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33072, 3L));
+                    !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33060, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
                         tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, 33L),
@@ -285,7 +285,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                     !OsValidator.WINDOWS ? tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33188, 8L) : tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33206, 8L));
             testFilesInDir(fileAbstractor, "/permission",
                     !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L), // This one is explicitly set, so it should be correct
-                    !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33072, 3L));
+                    !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33060, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
                         tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, 33L),
