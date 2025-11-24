@@ -58,6 +58,13 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+/**
+ * This is an integration test for the SSH File Abstractor.
+ * It verifies that the crawler can correctly connect to an SSH server, list files
+ * and directories, and accurately interpret their attributes.
+ * It works by starting an embedded mock SSH server that serves a temporary,
+ * fake filesystem created on the local machine.
+ */
 public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
     private static final Logger logger = LogManager.getLogger();
     private static final String SSH_USERNAME = "USERNAME";
@@ -65,11 +72,17 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
     private SshServer sshd = null;
     Path testDir = rootTmpDir.resolve("test-ssh");
 
+    /**
+     * Sets up a complete, temporary SSH environment before each test.
+     * This includes creating a fake filesystem and starting a mock SSH server.
+     */
     @Before
     public void setup() throws IOException, NoSuchAlgorithmException {
         if (Files.notExists(testDir)) {
             Files.createDirectory(testDir);
         }
+
+        // Create a predictable, temporary filesystem for the mock SSH server to use.
         // Add some fake files to the test-ssh directory
         /*
         /testfile.txt
@@ -107,6 +120,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         // Create /permission
         Path permissionDir = addFakeDir(testDir, "permission");
         // Create /permission/all.txt with all permissions
+        // We explicitly set these permissions to test that the crawler can correctly
+        // read both permissive and restrictive file attributes.
         Path allFile = permissionDir.resolve("all.txt");
         if (Files.notExists(allFile)) {
             Files.writeString(allFile, "123");
@@ -146,20 +161,31 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         saveKeyPair(rootTmpDir, keyPair);
 
+        // Start an embedded SSH server on a random available port.
         sshd = SshServer.setUpDefaultServer();
         sshd.setHost("localhost");
         sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(rootTmpDir.resolve("host.ser")));
+
+        // Configure authentication: allow both password and public key (PEM) auth.
         sshd.setPasswordAuthenticator((username, password, session) ->
                 SSH_USERNAME.equals(username) && SSH_PASSWORD.equals(password));
         sshd.setPublickeyAuthenticator(new AuthorizedKeysAuthenticator(rootTmpDir.resolve("public.key")));
 
+        // Set up the SFTP subsystem.
         sshd.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
+
+        // This is the most critical part of the setup. It tells the SSH server to use our temporary `testDir`
+        // as its root directory. This "sandboxes" the test, ensuring it doesn't accidentally read from
+        // the real filesystem (like C:\).
         sshd.setFileSystemFactory(new VirtualFileSystemFactory(testDir));
         sshd.start();
 
         logger.info(" -> Started fake SSHD service on {}:{}", sshd.getHost(), sshd.getPort());
     }
 
+    /**
+     * Saves a generated KeyPair into public and private key files that the SSH server and client can use.
+     */
     private void saveKeyPair(Path path, KeyPair keyPair) {
         OpenSSHKeyPairResourceWriter writer = new OpenSSHKeyPairResourceWriter();
 
@@ -178,6 +204,13 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         }
     }
 
+    /**
+     * Cleanly shuts down the mock SSH server after each test.
+     */
+    /**
+     * Cleanly shuts down the mock SSH server after each test.
+     * The `stop(true)` call ensures an immediate shutdown.
+     */
     @After
     public void shutDown() throws IOException {
         if (sshd != null) {
@@ -187,6 +220,10 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         }
     }
 
+    /**
+     * A basic "smoke test" to verify that the underlying SSH client can successfully connect
+     * and authenticate to the mock server using both password and PEM key methods.
+     */
     @Test
     public void sshClient() throws Exception {
         // Test with login / password
@@ -207,9 +244,14 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         }
     }
 
+    /**
+     * This is the core test method. It thoroughly tests the `FileAbstractorSSH` class
+     * by connecting to the mock server and asserting the contents of the fake filesystem.
+     */
     @Test
     public void fileAbstractorSSH() throws Exception {
-        // Define OS-specific permission values to make the test cleaner
+        // Define OS-specific permission values. This is crucial for making the test stable across different
+        // operating systems (like Windows and Linux) which report permissions differently.
         final int dirPerms = OsValidator.WINDOWS ? 16822 : 16877;
         final int filePerms = OsValidator.WINDOWS ? 33206 : 33188;
         final int allPerms = OsValidator.WINDOWS ? 33206 : 33279;
@@ -221,7 +263,11 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         fsSettings.getServer().setUsername(SSH_USERNAME);
         fsSettings.getServer().setPassword(SSH_PASSWORD);
 
-        // First run: Test with login/password
+        // The test data is defined using AssertJ's `tuple`. The structure for these tuples is:
+        // tuple(name, isDirectory, path, fullpath, permissions, size)
+        // This structure must match the properties extracted in the testFilesInDir() helper method.
+
+        // --- First run: Test with login/password ---
         try (FileAbstractor<?> fileAbstractor = new FileAbstractorSSH(fsSettings)) {
             fileAbstractor.open();
             assertThat(fileAbstractor.exists("/ThisPathDoesNotExist")).isFalse();
@@ -231,6 +277,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
             rootDirTuples.add(tuple("nested", true, "/", "/nested", dirPerms, 0L));
             rootDirTuples.add(tuple("permission", true, "/", "/permission", dirPerms, 0L));
+            // This test case is skipped on Windows because its filesystem does not support
+            // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", dirPerms, 0L));
             }
@@ -244,6 +292,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/permission",
                     tuple("all.txt", false, "/permission", "/permission/all.txt", allPerms, 3L),
                     tuple("none.txt", false, "/permission", "/permission/none.txt", nonePerms, 3L));
+            // This test case is skipped on Windows because its filesystem does not support
+            // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
                         tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, 33L),
@@ -251,7 +301,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             }
         }
 
-        // Test with PEM file
+        // --- Second run: Test with PEM file (passwordless authentication) ---
         fsSettings.getServer().setPemPath(rootTmpDir.resolve("private.key").toString());
         fsSettings.getServer().setPassword(null);
         try (FileAbstractor<?> fileAbstractor = new FileAbstractorSSH(fsSettings)) {
@@ -262,6 +312,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
             rootDirTuples.add(tuple("nested", true, "/", "/nested", dirPerms, 0L));
             rootDirTuples.add(tuple("permission", true, "/", "/permission", dirPerms, 0L));
+            // This test case is skipped on Windows because its filesystem does not support
+            // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", dirPerms, 0L));
             }
@@ -275,6 +327,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/permission",
                     tuple("all.txt", false, "/permission", "/permission/all.txt", allPerms, 3L),
                     tuple("none.txt", false, "/permission", "/permission/none.txt", nonePerms, 3L));
+            // This test case is skipped on Windows because its filesystem does not support
+            // directory names with trailing spaces.
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
                         tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", filePerms, 33L),
@@ -283,13 +337,20 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         }
     }
 
+    /**
+     * A powerful helper method to assert the contents of a given directory on the remote server.
+     * It's designed to be robust across different operating systems by handling OS-specific behaviors.
+     * @param fileAbstractor The abstractor instance to use.
+     * @param path The remote directory path to list and check.
+     * @param values The expected file/directory attributes (as Tuples) in that directory.
+     */
     private void testFilesInDir(FileAbstractor<?> fileAbstractor, String path, Tuple... values) throws Exception {
         assertThat(fileAbstractor.exists(path)).isEqualTo(values.length > 0);
         Collection<FileAbstractModel> models = fileAbstractor.getFiles(path);
         assertThat(models).hasSize(values.length);
 
-        // We can't assert on the size of a directory as it depends on the OS.
-        // So we are splitting our assertions for files and directories.
+        // We can't assert on the size of a directory as it depends on the OS (e.g., 0 on Windows, 4096 on Linux).
+        // So we split our assertions for files and directories to handle this case.
 
         // 1. Assertions for files
         assertThat(models.stream().filter(FileAbstractModel::isFile).collect(Collectors.toList())).extracting(
@@ -303,7 +364,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 java.util.stream.Stream.of(values).filter(tuple -> !(boolean) tuple.toList().get(1)).toArray(Tuple[]::new)
         );
 
-        // 2. Assertions for directories (we don't extract the size)
+        // 2. Assertions for directories: We specifically DO NOT extract the size, making the test OS-independent.
         assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(Collectors.toList())).extracting(
                 FileAbstractModel::getName,
                 FileAbstractModel::isDirectory,
@@ -313,11 +374,16 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
                         .filter(tuple -> (boolean) tuple.toList().get(1))
+                        // From the original 6-element test tuples, create new 5-element tuples that match the properties
+                        // being extracted for directories (name, isDirectory, path, fullpath, permissions).
                         .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4)))
                         .toArray(Tuple[]::new)
         );
     }
 
+    /**
+     * Helper to create a file with specific content in a given directory.
+     */
     private void addFakeFile(Path dir, String filename, String content) throws IOException {
         Path testFile = dir.resolve(filename);
         if (Files.notExists(testFile)) {
@@ -325,6 +391,9 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         }
     }
 
+    /**
+     * Helper to create a subdirectory.
+     */
     private Path addFakeDir(Path dir, String subDirname) throws IOException {
         Path testDir = dir.resolve(subDirname);
         if (Files.notExists(testDir)) {
