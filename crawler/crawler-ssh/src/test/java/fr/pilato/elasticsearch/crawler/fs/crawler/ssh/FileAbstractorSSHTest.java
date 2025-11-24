@@ -288,8 +288,9 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 ).containsExactlyInAnyOrder(
                         java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).<Tuple>map(
                                 tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
-                                        tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(7), tuple.toList().get(8),
-                                        tuple.toList().get(9))).toArray(Tuple[]::new)
+                                        tuple.toList().get(4), tuple.toList().get(5), // isFile, isDirectory, name, extension, path, fullpath
+                                        tuple.toList().get(7), tuple.toList().get(8), tuple.toList().get(9))) // permissions, owner, group
+                                .toArray(Tuple[]::new)
         );
 
         assertThat(models.stream().filter(FileAbstractModel::isFile).collect(java.util.stream.Collectors.toList())).extracting(
