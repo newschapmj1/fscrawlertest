@@ -27,6 +27,7 @@ import fr.pilato.elasticsearch.crawler.fs.test.framework.AbstractFSCrawlerTestCa
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.sshd.common.config.keys.writer.openssh.OpenSSHKeyPairResourceWriter;
+import org.apache.sshd.common.session.Session;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.config.keys.AuthorizedKeysAuthenticator;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
@@ -138,7 +139,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         SftpSubsystemFactory factory = new SftpSubsystemFactory.Builder()
                 .withFileSystemAccessor(new SftpFileSystemAccessor() {
                     @Override
-                    public Path resolveLocalFilePath(SftpSubsystemProxy subsystem, Path rootDir, String remotePath) throws InvalidPathException {
+                    public Path resolveLocalFilePath(Session session, SftpSubsystemProxy subsystem, Path rootDir, String remotePath) throws InvalidPathException {
                         String path = remotePath;
                         if (remotePath.startsWith("/")) {
                             path = remotePath.substring(1);
