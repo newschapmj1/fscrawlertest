@@ -289,8 +289,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                         java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).<Tuple>map(
                                 tuple -> {
                                     var list = tuple.toList();
-                                    // We are creating a new tuple here but without the size attribute (at index 6)
-                                    return tuple(java.util.List.of(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5), list.get(7), list.get(8), list.get(9)).toArray());
+                                    // We are creating a new tuple here but without the size attribute (which is at index 6)
+                                    return tuple(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5), list.get(7), list.get(8), list.get(9));
                                 })
                                 .toArray(Tuple[]::new)
         );
