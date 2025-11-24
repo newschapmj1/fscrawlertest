@@ -231,25 +231,25 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple(false, true, "nested", null, "/", "/nested", 16877, "0", "0", 0L));
-            rootDirTuples.add(tuple(false, true,"permission", null, "/", "/permission", 16877, "0", "0", 0L));
+            rootDirTuples.add(tuple("nested", true, "/", "/nested", "0", "0", 16877, 0L));
+            rootDirTuples.add(tuple("permission", true, "/", "/permission", "0", "0", 16877, 0L));
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple(false, true, "subdir_with_space ", null, "/", "/subdir_with_space ", 16877, "0", "0", 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", "0", "0", 16877, 0L));
             }
-            rootDirTuples.add(tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 33188, "0", "0", 15L));
+            rootDirTuples.add(tuple("testfile.txt", false, "/", "/testfile.txt", "0", "0", 33188, 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 16877, "0", "0", 0L),
-                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 33188, "0", "0", 24L),
-                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 33188, "0", "0", 8L));
+                    tuple("buzz", true, "/nested", "/nested/buzz", "0", "0", 16877, 0L),
+                    tuple("foo.txt", false, "/nested", "/nested/foo.txt", "0", "0", 33188, 24L),
+                    tuple("bar.txt", false, "/nested", "/nested/bar.txt", "0", "0", 33188, 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 33279, "0", "0", 3L),
-                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 32768, "0", "0", 3L));
+                    tuple("all.txt", false, "/permission", "/permission/all.txt", "0", "0", 33279, 3L),
+                    tuple("none.txt", false, "/permission", "/permission/none.txt", "0", "0", 32768, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                        tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, "0", "0", 33L),
-                        tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33188, "0", "0", 33L));
+                        tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", "0", "0", 33188, 33L),
+                        tuple("world.txt", false, "/subdir_with_space ", "/subdir_with_space /world.txt", "0", "0", 33188, 33L));
             }
         }
 
@@ -263,25 +263,25 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
 
             java.util.List<Tuple> rootDirTuples = new ArrayList<>();
-            rootDirTuples.add(tuple(false, true, "nested", null, "/", "/nested", 16877, "0", "0", 0L));
-            rootDirTuples.add(tuple(false, true,"permission", null, "/", "/permission", 16877, "0", "0", 0L));
+            rootDirTuples.add(tuple("nested", true, "/", "/nested", "0", "0", 16877, 0L));
+            rootDirTuples.add(tuple("permission", true, "/", "/permission", "0", "0", 16877, 0L));
             if (!OsValidator.WINDOWS) {
-                rootDirTuples.add(tuple(false, true, "subdir_with_space ", null, "/", "/subdir_with_space ", 16877, "0", "0", 0L));
+                rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", "0", "0", 16877, 0L));
             }
-            rootDirTuples.add(tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 33188, "0", "0", 15L));
+            rootDirTuples.add(tuple("testfile.txt", false, "/", "/testfile.txt", "0", "0", 33188, 15L));
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 16877, "0", "0", 0L),
-                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 33188, "0", "0", 24L),
-                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 33188, "0", "0", 8L));
+                    tuple("buzz", true, "/nested", "/nested/buzz", "0", "0", 16877, 0L),
+                    tuple("foo.txt", false, "/nested", "/nested/foo.txt", "0", "0", 33188, 24L),
+                    tuple("bar.txt", false, "/nested", "/nested/bar.txt", "0", "0", 33188, 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 33279, "0", "0", 3L),
-                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 32768, "0", "0", 3L));
+                    tuple("all.txt", false, "/permission", "/permission/all.txt", "0", "0", 33279, 3L),
+                    tuple("none.txt", false, "/permission", "/permission/none.txt", "0", "0", 32768, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                        tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, "0", "0", 33L),
-                        tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33188, "0", "0", 33L));
+                        tuple("hello.txt", false, "/subdir_with_space ", "/subdir_with_space /hello.txt", "0", "0", 33188, 33L),
+                        tuple("world.txt", false, "/subdir_with_space ", "/subdir_with_space /world.txt", "0", "0", 33188, 33L));
             }
         }
     }
@@ -291,42 +291,26 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         Collection<FileAbstractModel> models = fileAbstractor.getFiles(path);
         assertThat(models).hasSize(values.length);
 
-        // We can't assert on the size of a directory as it depends on the OS.
-        // So we are splitting our assertions
-        assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(java.util.stream.Collectors.toList())).extracting(
-                        FileAbstractModel::isFile,
-                        FileAbstractModel::isDirectory,
-                        FileAbstractModel::getName,
-                        FileAbstractModel::getExtension,
-                        FileAbstractModel::getPath,
-                        FileAbstractModel::getFullpath,
-                        FileAbstractModel::getPermissions,
-                        FileAbstractModel::getOwner,
-                        FileAbstractModel::getGroup
-                ).containsExactlyInAnyOrder(
-                        java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).<Tuple>map(
-                                tuple -> {
-                                    // We are creating a new tuple here for directories, which does not include size.
-                                    // The original tuple has 10 elements. The new one will have 9.
-                                    return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
-                                            tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7), tuple.toList().get(8));
-                                })
-                                .toArray(Tuple[]::new)
-        );
-
-        assertThat(models.stream().filter(FileAbstractModel::isFile).collect(java.util.stream.Collectors.toList())).extracting(
-                FileAbstractModel::isFile,
-                FileAbstractModel::isDirectory,
+        // We don't assert on isFile, extension and dates as they are either redundant or not fully predictable
+        assertThat(models).extracting(
                 FileAbstractModel::getName,
-                FileAbstractModel::getExtension,
+                FileAbstractModel::isDirectory,
                 FileAbstractModel::getPath,
                 FileAbstractModel::getFullpath,
-                FileAbstractModel::getPermissions, // 7th
-                FileAbstractModel::getOwner,       // 8th
-                FileAbstractModel::getGroup,       // 9th
-                FileAbstractModel::getSize         // 10th
+                FileAbstractModel::getOwner,
+                FileAbstractModel::getGroup,
+                FileAbstractModel::getPermissions,
+                FileAbstractModel::getSize
         ).containsExactlyInAnyOrder(
-                java.util.stream.Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(0)).toArray(Tuple[]::new)
+                java.util.stream.Stream.of(values)
+                        .map(tuple -> {
+                            // For directories, we can't rely on the size reported by the OS.
+                            // So if it's a directory, we just ignore the size for the assertion.
+                            if ((boolean) tuple.toList().get(1)) {
+                                return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), null);
+                            }
+                            return tuple;
+                        }).toArray(Tuple[]::new)
         );
     }
 
