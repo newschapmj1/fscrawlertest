@@ -307,7 +307,7 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                             // For directories, we can't rely on the size reported by the OS.
                             // So if it's a directory, we just ignore the size for the assertion.
                             if ((boolean) tuple.toList().get(1)) {
-                                return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), tuple.toList().get(7));
+                                return tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3), tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(6), null);
                             }
                             return tuple;
                         }).toArray(Tuple[]::new)
