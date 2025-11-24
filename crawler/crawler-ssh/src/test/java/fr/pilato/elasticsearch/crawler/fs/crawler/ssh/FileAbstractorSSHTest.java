@@ -226,8 +226,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 rootDirTuples.add(tuple("nested", true, "/", "/nested", 16877, 0L));
                 rootDirTuples.add(tuple("permission", true, "/", "/permission", 16877, 0L));
             } else {
-                rootDirTuples.add(tuple("nested", true, "/", "/nested", 16895, 0L));
-                rootDirTuples.add(tuple("permission", true, "/", "/permission", 16895, 0L));
+                rootDirTuples.add(tuple("nested", true, "/", "/nested", 16822, 0L));
+                rootDirTuples.add(tuple("permission", true, "/", "/permission", 16822, 0L));
             }
             if (!OsValidator.WINDOWS) {
                 rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", 16877, 0L));
@@ -240,11 +240,11 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    !OsValidator.WINDOWS ? tuple("buzz", true, "/nested", "/nested/buzz", 16877, 0L) : tuple("buzz", true, "/nested", "/nested/buzz", 16895, 0L),
+                    !OsValidator.WINDOWS ? tuple("buzz", true, "/nested", "/nested/buzz", 16877, 0L) : tuple("buzz", true, "/nested", "/nested/buzz", 16822, 0L),
                     !OsValidator.WINDOWS ? tuple("foo.txt", false, "/nested", "/nested/foo.txt", 33188, 24L) : tuple("foo.txt", false, "/nested", "/nested/foo.txt", 33206, 24L),
                     !OsValidator.WINDOWS ? tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33188, 8L) : tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33206, 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L),
+                    !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L), // This one is explicitly set, so it should be correct
                     !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33072, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
@@ -266,8 +266,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                 rootDirTuples.add(tuple("nested", true, "/", "/nested", 16877, 0L));
                 rootDirTuples.add(tuple("permission", true, "/", "/permission", 16877, 0L));
             } else {
-                rootDirTuples.add(tuple("nested", true, "/", "/nested", 16895, 0L));
-                rootDirTuples.add(tuple("permission", true, "/", "/permission", 16895, 0L));
+                rootDirTuples.add(tuple("nested", true, "/", "/nested", 16822, 0L));
+                rootDirTuples.add(tuple("permission", true, "/", "/permission", 16822, 0L));
             }
             if (!OsValidator.WINDOWS) {
                 rootDirTuples.add(tuple("subdir_with_space ", true, "/", "/subdir_with_space ", 16877, 0L));
@@ -280,11 +280,11 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
             testFilesInDir(fileAbstractor, "/", rootDirTuples.toArray(new Tuple[0]));
 
             testFilesInDir(fileAbstractor, "/nested",
-                    !OsValidator.WINDOWS ? tuple("buzz", true, "/nested", "/nested/buzz", 16877, 0L) : tuple("buzz", true, "/nested", "/nested/buzz", 16895, 0L),
+                    !OsValidator.WINDOWS ? tuple("buzz", true, "/nested", "/nested/buzz", 16877, 0L) : tuple("buzz", true, "/nested", "/nested/buzz", 16822, 0L),
                     !OsValidator.WINDOWS ? tuple("foo.txt", false, "/nested", "/nested/foo.txt", 33188, 24L) : tuple("foo.txt", false, "/nested", "/nested/foo.txt", 33206, 24L),
                     !OsValidator.WINDOWS ? tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33188, 8L) : tuple("bar.txt", false, "/nested", "/nested/bar.txt", 33206, 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L),
+                    !OsValidator.WINDOWS ? tuple("all.txt", false, "/permission", "/permission/all.txt", 33279, 3L) : tuple("all.txt", false, "/permission", "/permission/all.txt", 33206, 3L), // This one is explicitly set, so it should be correct
                     !OsValidator.WINDOWS ? tuple("none.txt", false, "/permission", "/permission/none.txt", 32768, 3L) : tuple("none.txt", false, "/permission", "/permission/none.txt", 33072, 3L));
             if (!OsValidator.WINDOWS) {
                 testFilesInDir(fileAbstractor, "/subdir_with_space ",
