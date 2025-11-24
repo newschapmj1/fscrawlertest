@@ -226,20 +226,20 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
 
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
             testFilesInDir(fileAbstractor, "/",
-                    tuple(false, true, "nested", null, "/", "/nested", 0L, 16877, "0", "0"),
-                    tuple(false, true,"permission", null, "/", "/permission", 0L, 16877, "0", "0"),
-                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 0L, 16877, "0", "0"),
-                    tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 15L, 33188, "0", "0"));
+                    tuple(false, true, "nested", null, "/", "/nested", 16877, "0", "0", 0L),
+                    tuple(false, true,"permission", null, "/", "/permission", 16877, "0", "0", 0L),
+                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 16877, "0", "0", 0L),
+                    tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 33188, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 0L, 16877, "0", "0"),
-                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 24L, 33188, "0", "0"),
-                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 8L, 33188, "0", "0"));
+                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 16877, "0", "0", 0L),
+                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 33188, "0", "0", 24L),
+                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 33188, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 3L, 33279, "0", "0"),
-                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 3L, 32768, "0", "0"));
+                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 33279, "0", "0", 3L),
+                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 32768, "0", "0", 3L));
             testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                    tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33L, 33188, "0", "0"),
-                    tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33L, 33188, "0", "0"));
+                    tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, "0", "0", 33L),
+                    tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33188, "0", "0", 33L));
         }
 
         // Test with PEM file
@@ -251,20 +251,20 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
 
             testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
             testFilesInDir(fileAbstractor, "/",
-                    tuple(false, true, "nested", null, "/", "/nested", 0L, 16877, "0", "0"),
-                    tuple(false, true,"permission", null, "/", "/permission", 0L, 16877, "0", "0"),
-                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 0L, 16877, "0", "0"),
-                    tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 15L, 33188, "0", "0"));
+                    tuple(false, true, "nested", null, "/", "/nested", 16877, "0", "0", 0L),
+                    tuple(false, true,"permission", null, "/", "/permission", 16877, "0", "0", 0L),
+                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 16877, "0", "0", 0L),
+                    tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 33188, "0", "0", 15L));
             testFilesInDir(fileAbstractor, "/nested",
-                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 0L, 16877, "0", "0"),
-                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 24L, 33188, "0", "0"),
-                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 8L, 33188, "0", "0"));
+                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 16877, "0", "0", 0L),
+                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 33188, "0", "0", 24L),
+                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 33188, "0", "0", 8L));
             testFilesInDir(fileAbstractor, "/permission",
-                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 3L, 33279, "0", "0"),
-                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 3L, 32768, "0", "0"));
+                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 33279, "0", "0", 3L),
+                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 32768, "0", "0", 3L));
             testFilesInDir(fileAbstractor, "/subdir_with_space ",
-                    tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33L, 33188, "0", "0"),
-                    tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33L, 33188, "0", "0"));
+                    tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33188, "0", "0", 33L),
+                    tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33188, "0", "0", 33L));
         }
     }
 
