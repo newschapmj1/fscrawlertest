@@ -81,7 +81,7 @@ public class FileAbstractorSSH extends FileAbstractor<SftpClient.DirEntry> {
                 LocalDateTime.ofInstant(file.getAttributes().getAccessTime().toInstant(), ZoneId.systemDefault()),
                 FilenameUtils.getExtension(file.getFilename()),
                 path,
-                path.equals("/") ? path.concat(file.getFilename()) : path.concat("/").concat(file.getFilename()),
+                path.endsWith("/") ? path.concat(file.getFilename()) : path.concat("/").concat(file.getFilename()),
                 file.getAttributes().getSize(),
                 Integer.toString(file.getAttributes().getUserId()),
                 Integer.toString(file.getAttributes().getGroupId()),

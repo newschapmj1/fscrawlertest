@@ -241,13 +241,41 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                     tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33L, 33188, "0", "0"),
                     tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33L, 33188, "0", "0"));
         }
+
+        // Test with PEM file
+        fsSettings.getServer().setPemPath(rootTmpDir.resolve("private.key").toString());
+        fsSettings.getServer().setPassword(null);
+        try (FileAbstractor<?> fileAbstractor = new FileAbstractorSSH(fsSettings)) {
+            fileAbstractor.open();
+            assertThat(fileAbstractor.exists("/ThisPathDoesNotExist")).isFalse();
+
+            testFilesInDir(fileAbstractor, "/ThisPathDoesNotExist");
+            testFilesInDir(fileAbstractor, "/",
+                    tuple(false, true, "nested", null, "/", "/nested", 0L, 16877, "0", "0"),
+                    tuple(false, true,"permission", null, "/", "/permission", 0L, 16877, "0", "0"),
+                    tuple(false, true,"subdir_with_space ", null, "/", "/subdir_with_space ", 0L, 16877, "0", "0"),
+                    tuple(true, false, "testfile.txt", "txt", "/", "/testfile.txt", 15L, 33188, "0", "0"));
+            testFilesInDir(fileAbstractor, "/nested",
+                    tuple(false, true,"buzz", null, "/nested", "/nested/buzz", 0L, 16877, "0", "0"),
+                    tuple(true, false, "foo.txt", "txt", "/nested", "/nested/foo.txt", 24L, 33188, "0", "0"),
+                    tuple(true, false, "bar.txt", "txt", "/nested", "/nested/bar.txt", 8L, 33188, "0", "0"));
+            testFilesInDir(fileAbstractor, "/permission",
+                    tuple(true, false, "all.txt", "txt", "/permission", "/permission/all.txt", 3L, 33279, "0", "0"),
+                    tuple(true, false, "none.txt", "txt", "/permission", "/permission/none.txt", 3L, 32768, "0", "0"));
+            testFilesInDir(fileAbstractor, "/subdir_with_space ",
+                    tuple(true, false, "hello.txt", "txt", "/subdir_with_space ", "/subdir_with_space /hello.txt", 33L, 33188, "0", "0"),
+                    tuple(true, false, "world.txt", "txt", "/subdir_with_space ", "/subdir_with_space /world.txt", 33L, 33188, "0", "0"));
+        }
     }
 
     private void testFilesInDir(FileAbstractor<?> fileAbstractor, String path, Tuple... values) throws Exception {
         assertThat(fileAbstractor.exists(path)).isEqualTo(values.length > 0);
-        Collection<FileAbstractModel> files = fileAbstractor.getFiles(path);
-        assertThat(files).hasSize(values.length);
-        assertThat(files).extracting(
+        Collection<FileAbstractModel> models = fileAbstractor.getFiles(path);
+        assertThat(models).hasSize(values.length);
+
+        // We can't assert on the size of a directory as it depends on the OS.
+        // So we are splitting our assertions
+        assertThat(models.stream().filter(FileAbstractModel::isDirectory).collect(Collectors.toList())).extracting(
                         FileAbstractModel::isFile,
                         FileAbstractModel::isDirectory,
                         FileAbstractModel::getName,
@@ -258,7 +286,27 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
                         FileAbstractModel::getPermissions,
                         FileAbstractModel::getOwner,
                         FileAbstractModel::getGroup
-                ).containsExactlyInAnyOrder(values);
+                ).containsExactlyInAnyOrder(
+                        Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(1)).map(
+                                tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
+                                        tuple.toList().get(4), tuple.toList().get(5), tuple.toList().get(7), tuple.toList().get(8),
+                                        tuple.toList().get(9))).collect(Collectors.toList()).toArray(new Tuple[]{})
+        );
+
+        assertThat(models.stream().filter(FileAbstractModel::isFile).collect(Collectors.toList())).extracting(
+                FileAbstractModel::isFile,
+                FileAbstractModel::isDirectory,
+                FileAbstractModel::getName,
+                FileAbstractModel::getExtension,
+                FileAbstractModel::getPath,
+                FileAbstractModel::getFullpath,
+                FileAbstractModel::getSize,
+                FileAbstractModel::getPermissions,
+                FileAbstractModel::getOwner,
+                FileAbstractModel::getGroup
+        ).containsExactlyInanyOrder(
+                Stream.of(values).filter(tuple -> (boolean) tuple.toList().get(0)).toArray(Tuple[]::new)
+        );
     }
 
     private void addFakeFile(Path dir, String filename, String content) throws IOException {
