@@ -317,8 +317,8 @@ public class FileAbstractorSSHTest extends AbstractFSCrawlerTestCase {
         ).containsExactlyInAnyOrder(
                 java.util.stream.Stream.of(values)
                         .filter(tuple -> (boolean) tuple.toList().get(1))
-                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2),
-                                tuple.toList().get(3), tuple.toList().get(4)))
+                        .map(tuple -> tuple(tuple.toList().get(0), tuple.toList().get(1), tuple.toList().get(2), tuple.toList().get(3),
+                                tuple.toList().get(4)))
                         .toArray(Tuple[]::new)
         );
     }
